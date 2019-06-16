@@ -1,0 +1,19 @@
+{
+  "name": "gcal-csv-gas",
+  "version": "1.0.0",
+  "description": "create CSV from Google Calendar schedule using GAS (Google Apps Script) with clasp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@google/clasp": "^2.1.0",
+    "tslint": "^5.17.0"
+  },
+  "dependencies": {
+    "@types/google-apps-script": "0.0.53"
+  }
+}
