@@ -11,3 +11,20 @@ export function getNumberOfWeekInMonth(thisDay: Date) {
         return (thisDay.getMonth() + 1) + "月-第" + Math.floor((nextFriDate + 6) / 7) + "週";
     }
 }
+
+export function openSheet(sheetKey: string, sheetName: string) {
+    const spreadsheet = SpreadsheetApp.openById(sheetKey);
+    return spreadsheet.getSheetByName(sheetName);
+}
+
+// 一度 subscribe すると、組織内の他の人の予定も読めるようになる
+// https://groups.google.com/forum/#!topic/google-apps-api-japan/yy262qzhCZw
+
+export function subscribe(calId: string) {
+    CalendarApp.subscribeToCalendar(calId);
+}
+
+export function unsubscribe(calId: string) {
+    const cal = CalendarApp.getCalendarById(calId);
+    cal.unsubscribeFromCalendar();
+}

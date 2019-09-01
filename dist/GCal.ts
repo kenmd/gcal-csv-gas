@@ -1,18 +1,27 @@
-import { getNumberOfWeekInMonth } from "./Util";
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 import Event = GoogleAppsScript.Calendar.CalendarEvent;
+import { myCalendarId } from "./GCalLists";
+import { getNumberOfWeekInMonth, subscribe, unsubscribe } from "./Util";
 
-export function saveEvents(calId: string, fromDate: string, toDate: string, sheetKey: string, sheetName: string) {
-    const sheet = _openSheet(sheetKey, sheetName);
+export function saveEvents(calIds: string[], fromDate: string, toDate: string, sheet: Sheet) {
     _prepareSheetHeader(sheet);
 
-    const events = _findEvents(calId, fromDate, toDate);
-    _writeEventsToSheet(calId, events, sheet);
-}
+    let row = 2;
 
-function _openSheet(sheetKey: string, sheetName: string) {
-    const spreadsheet = SpreadsheetApp.openById(sheetKey);
-    return spreadsheet.getSheetByName(sheetName);
+    for (const calId of calIds) {
+        Logger.log(calId);
+
+        if (calId !== myCalendarId()) {
+            subscribe(calId);
+        }
+
+        const events = _findEvents(calId, fromDate, toDate);
+        row = _writeEventsToSheet(row, calId, events, sheet);
+
+        if (calId !== myCalendarId()) {
+            unsubscribe(calId);
+        }
+    }
 }
 
 function _findEvents(calId: string, fromDate: string, toDate: string) {
@@ -32,9 +41,7 @@ function _prepareSheetHeader(sheet: Sheet) {
     sheet.getRange("I1").setValue("場所");
 }
 
-function _writeEventsToSheet(calId: string, events: Event[], sheet: Sheet) {
-    let row = 2;
-
+function _writeEventsToSheet(row: number, calId: string, events: Event[], sheet: Sheet) {
     for (const event of events) {
         const start = event.getStartTime();
         const end = event.getEndTime();
@@ -61,4 +68,6 @@ function _writeEventsToSheet(calId: string, events: Event[], sheet: Sheet) {
 
         row++;
     }
+
+    return row;
 }
