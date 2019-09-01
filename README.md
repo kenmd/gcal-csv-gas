@@ -1,9 +1,11 @@
-# Google Calendar を CSV 保存する GAS/TypeScript サンプルコード
+# Google Calendar の予定を CSV 一括保存する GAS/TypeScript サンプルコード
 
 * Google カレンダーの予定をスプレッドシート (延いては CSV) に保存するサンプルコード
 * GAS (Google Apps Script) 開発には clasp で TypeScript を利用
-* 後のピボットテーブルでの分析の便宜のため、年月、週番号や時間も合わせて出力
-  - 会議時間の分析が目的であるため、一日単位のスケジュールは出力を省いている
+* 後のピボットテーブルでの分析のため、年月、週番号や時間も合わせて出力
+  - 時間単位の分析の便宜のため、一日単位のスケジュールは出力を省いている
+* 非管理者でも G Suite 組織内の自分以外のメンバーのスケジュールを取得可能
+* ID リストを渡すことにより、複数メンバーのスケジュールを一括取得が可能
 
 __(参考) 出力されたデータをピボットテーブルでグラフにした例__
 
@@ -14,45 +16,7 @@ __(参考) 出力されたデータをピボットテーブルでグラフにし
 
 ## Setup Node.js, TypeScript compiler and Clasp
 
-* `.bashrc` に `export PATH=./node_modules/.bin:$PATH` しておくと便利
-
-```bash
-# brew は Mac 用 (Windows 用なら代わりに chocolatey 等を適宜利用)
-brew update && brew upgrade && brew cask upgrade
-brew install nodenv
-echo 'eval "$(nodenv init -)"' >> ~/.bashrc
-
-nodenv versions
-nodenv install 10.16.0
-nodenv global 10.16.0
-node --version
-> v10.16.0
-
-npm install -g typescript
-# need restart bash
-tsc --version
-> Version 3.5.2
-
-npm init -y
-npm install --save-dev @google/clasp tslint
-npm install --save @types/google-apps-script
-clasp --version
-> 2.1.0
-tslint --init
-```
-
-* 推奨開発環境は VSCode (設定の手間なくコード補完やフォーマットをしてくれる)
-  - `brew cask install visual-studio-code`
-* MS 公式 TSLint プラグインをインストールしておく
-  - https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin
-* `tsconfig.json` をドキュメントに従って作成する
-  - https://github.com/google/clasp/blob/master/docs/typescript.md
-
-```bash
-# 初期設定 GAS API を ON (初回のみ実行)
-open https://script.google.com/home/usersettings
-clasp login
-```
+* [README_DEV_TOOLS](README_DEV_TOOLS.md)
 
 
 ## Run
@@ -61,8 +25,8 @@ clasp login
 * プロジェクトを開き `ファイル > プロジェクトのプロパティ` からスクリプトIDを確認
 * `.clasp.json.sample` の `scriptId` を適宜書き換え `.clasp.json` とする
 * 上記によりプロジェクトとの紐付けされ、本コードを push すれば実行可能になるはず
-* Code.ts 内 main の Calendar ID 等の変数を適宜変更し main を実行する
-  - calendar ID は通常はメールアドレス、sheetKey はスプレッドシートのURLにある
+* GCalLists.ts 内の calIds 等の変数を適宜変更し Code.ts の main を実行する
+  - Calendar ID は通常はメールアドレス、sheetKey はスプレッドシートの URL にある
 
 
 ## Development
@@ -73,6 +37,7 @@ clasp login
 clasp create --type standalone --title "GCal-Save-Events" --rootDir ./dist
 clasp pull
 # デフォルトで作成される Code.js は .ts にリネームして利用する
+mv dist/Code.js dist/Code.ts
 ```
 
 * プロジェクト作成後の開発サイクル
@@ -97,3 +62,13 @@ clasp status
   - https://qiita.com/yekcam/items/cad26ea846f911db0ab8
 * G Suite 組織内ユーザーの予定を名前から取得してみる
   - https://qiita.com/Shota_Fukuda/items/5c280cece174c58ac044
+  - ここに記載の `viewType` は試した限り残念ながら期待した通りに動かなかった
+* GASでAdmin SDKを利用する（Directory編）その１
+  - https://qiita.com/ttyokoyama/items/f41cd5f4f6c4dc2e9ee3
+  - https://developers.google.com/apps-script/advanced/admin-sdk-directory#list_all_users
+* Retrieve a user as a non-administrator
+  - https://developers.google.com/admin-sdk/directory/v1/guides/manage-users#retrieve_users_non_admin
+* GASで社内のメールアドレスと氏名を対応づけようと思ったら、苦しかった話
+  - https://qiita.com/t--k/items/6c64d16e3963f5824e56
+* 非管理者の場合、一度 subscribe すると、組織内の他の人の予定も読めるようになる
+  - https://groups.google.com/forum/#!topic/google-apps-api-japan/yy262qzhCZw
