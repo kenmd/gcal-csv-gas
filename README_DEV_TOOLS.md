@@ -20,11 +20,12 @@ echo 'eval "$(nodenv init -)"' >> ~/.bashrc
 echo 'export PATH=./node_modules/.bin:$PATH' >> ~/.bashrc
 # restart bash
 
-nodenv versions     # find out the latest version
-nodenv install 10.16.0
-nodenv global 10.16.0
+nodenv install --list | less  # find out the latest version
+nodenv install 12.16.1
+nodenv global 12.16.1
+nodenv versions
 node --version
-> v10.16.0
+> v12.16.1
 ```
 
 
@@ -36,7 +37,7 @@ npm install -g typescript
 # restart bash
 
 tsc --version
-> Version 3.5.2
+> Version 3.8.3
 ```
 
 * create some project directory and install TSLint and Clasp
@@ -66,9 +67,12 @@ tslint --init
 ```bash
 # check outdated packages
 npm outdated
+npm outdated --save-dev
 
 # this will update to the Wanted version
 npm update
+npm update --save-dev
+
 # you can specify the Latest version
 npm install --save @types/google-apps-script@0.0.56
 ```
