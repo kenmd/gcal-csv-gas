@@ -17,5 +17,4 @@
             "url": "http://json.schemastore.org/clasp"
         }
     ],
-    "tslint.configFile": "tslint.json"
 }

@@ -9,10 +9,10 @@ brew update && brew upgrade && brew cask upgrade
 # install VSCode (auto complete & auto format out of the box)
 brew cask install visual-studio-code
 
-# check if you have TSLint Extension
+# check if you have ESLint Extension
 code --list-extensions
-# if not install Microsoft official TSLint extension
-code --install-extension ms-vscode.vscode-typescript-tslint-plugin
+# if not install Microsoft official ESLint extension
+code --install-extension dbaeumer.vscode-eslint
 
 # install Node.js
 brew install nodenv
@@ -29,7 +29,7 @@ node --version
 ```
 
 
-## Setup TypeScript compiler, TSLint and Clasp
+## Setup TypeScript compiler, ESLint and Clasp
 
 ```bash
 # install TypeScript compiler
@@ -40,15 +40,32 @@ tsc --version
 > Version 3.8.3
 ```
 
-* create some project directory and install TSLint and Clasp
+* create some project directory and install ESLint and Clasp
 
 ```bash
 npm init -y
-npm install --save-dev @google/clasp tslint
+npm install --save-dev @google/clasp eslint
 npm install --save @types/google-apps-script
-clasp --version
-> 2.2.0
-tslint --init
+
+npx clasp --version
+> 2.3.2
+npx eslint --version
+v7.28.0
+
+npx eslint --init
+✔ How would you like to use ESLint? · problems
+✔ What type of modules does your project use? · esm
+✔ Which framework does your project use? · none
+✔ Does your project use TypeScript? · Yes
+✔ Where does your code run? · node
+✔ What format do you want your config file to be in? · JSON
+# The config that you've selected requires the following dependencies:
+# @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest
+✔ Would you like to install them now with npm? · Yes
+# Installing @typescript-eslint/eslint-plugin@latest, @typescript-eslint/parser@latest
+
+# run check
+npx eslint ./dist
 ```
 
 
